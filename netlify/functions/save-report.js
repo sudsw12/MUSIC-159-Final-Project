@@ -23,7 +23,7 @@ exports.handler = async (event) => {
     }
 
     const REPO = 'sudsw12/music159finalproject';
-    const FILE_PATH = 'Website/report.html';
+    const FILE_PATH = 'report.html';
 
     // 1. Get the current file's SHA from GitHub
     const getRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`, {
@@ -34,7 +34,8 @@ exports.handler = async (event) => {
     });
     
     if (!getRes.ok) {
-      return { statusCode: 500, body: 'Failed to fetch current file from GitHub.' };
+      const errorText = await getRes.text();
+      return { statusCode: 500, body: `Failed to fetch current file from GitHub. Status: ${getRes.status}. Details: ${errorText}` };
     }
 
     const fileData = await getRes.json();
