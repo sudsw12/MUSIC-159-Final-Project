@@ -7,8 +7,13 @@ exports.handler = async (event) => {
     const payload = JSON.parse(event.body);
     const { password, content } = payload;
 
-    // Verify password against Netlify environment variables
-    if (password !== process.env.EDIT_PASSWORD) {
+    const envPassword = process.env.EDIT_PASSWORD;
+    if (!envPassword) {
+      return { statusCode: 500, body: 'Server Error: EDIT_PASSWORD environment variable is not set in Netlify.' };
+    }
+
+    // Verify password against Netlify environment variables (trimming accidental spaces)
+    if (password.trim() !== envPassword.trim()) {
       return { statusCode: 401, body: 'Unauthorized: Incorrect Password' };
     }
 
