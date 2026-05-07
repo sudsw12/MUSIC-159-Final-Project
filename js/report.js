@@ -45,11 +45,51 @@ function toggleEditMode(on) {
   if (on) {
     // Listen for input to auto-save
     document.addEventListener('input', handleEssayInput);
-    showToast('Edit mode ON — click any text to edit. Changes auto-save.');
+    showToast('Edit mode ON — click any text to edit. Changes auto-save locally.');
   } else {
     document.removeEventListener('input', handleEssayInput);
     saveEssayEdits();
-    showToast('Edit mode OFF — changes saved.');
+    
+    // Ask if they want to publish
+    setTimeout(() => {
+      const pwd = prompt("Changes saved to your browser! To publish them permanently to the live website (GitHub), enter your secret edit password. Or click Cancel to just keep them locally.");
+      if (pwd) {
+        publishToGitHub(pwd);
+      } else {
+        showToast('Edit mode OFF — changes saved locally only.');
+      }
+    }, 100);
+  }
+}
+
+async function publishToGitHub(password) {
+  showToast('Publishing to GitHub... please wait.', 10000); // 10s toast
+  
+  try {
+    // Clean up DOM before saving
+    const existingToast = document.getElementById('edit-toast');
+    if (existingToast) existingToast.remove();
+    
+    // Get the full HTML
+    const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    
+    const res = await fetch('/.netlify/functions/save-report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        password: password,
+        content: htmlContent
+      })
+    });
+    
+    if (res.ok) {
+      showToast('🎉 Successfully published to GitHub! The live site will update in ~1 minute.');
+    } else {
+      const err = await res.text();
+      showToast('Failed to publish: ' + err);
+    }
+  } catch(e) {
+    showToast('Error: ' + e.message);
   }
 }
 
@@ -114,7 +154,7 @@ function loadEssayEdits() {
   }
 }
 
-function showToast(message) {
+function showToast(message, duration = 2500) {
   // Remove existing toast
   const existing = $('#edit-toast');
   if (existing) existing.remove();
@@ -131,7 +171,7 @@ function showToast(message) {
     setTimeout(() => {
       toast.classList.remove('visible');
       setTimeout(() => toast.remove(), 400);
-    }, 2500);
+    }, duration);
   });
 }
 
