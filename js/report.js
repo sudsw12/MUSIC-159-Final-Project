@@ -415,7 +415,7 @@ function closeSnippetCreator() {
 }
 
 /* ---------- Mini Player Modal ---------- */
-const snippetEngine = new AudioEngine();
+let snippetEngine = null;
 let snippetSpectrogram = null;
 let snippetAnimationFrame = null;
 let currentSnippet = null; // { start, end }
@@ -465,11 +465,28 @@ function initSnippetPlayer() {
 
   document.getElementById('sp-btn-close').addEventListener('click', closeSnippetPlayer);
   document.getElementById('sp-btn-expand').addEventListener('click', () => {
-    modal.classList.toggle('expanded');
+    const pModal = document.getElementById('snippet-player-modal');
+    pModal.classList.toggle('expanded');
     if (snippetSpectrogram) snippetSpectrogram._resize();
   });
   
   document.getElementById('sp-btn-play').addEventListener('click', toggleSnippetPlay);
+  
+  // Scrubber click handler
+  document.getElementById('sp-bar-wrap').addEventListener('mousedown', (e) => {
+    if (!currentSnippet || !snippetEngine || !snippetEngine.duration) return;
+    const rect = e.target.closest('#sp-bar-wrap').getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    
+    const newTime = currentSnippet.start + (pct * currentSnippet.duration);
+    snippetEngine.seek(newTime);
+    
+    document.getElementById('sp-bar-fill').style.width = `${pct * 100}%`;
+    document.getElementById('sp-time-current').textContent = `${(newTime - currentSnippet.start).toFixed(1)}s`;
+    if (snippetSpectrogram) {
+       snippetSpectrogram._drawStatic(newTime / snippetEngine.duration);
+    }
+  });
 }
 
 async function openSnippetPlayer(stemsStr, start, end) {
@@ -482,8 +499,12 @@ async function openSnippetPlayer(stemsStr, start, end) {
   document.getElementById('sp-bar-fill').style.width = '0%';
   document.getElementById('sp-btn-play').innerHTML = '<svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg>';
   
-  // Stop current if playing
-  snippetEngine.stop();
+  // Stop current if playing and recreate engine
+  if (snippetEngine) {
+    snippetEngine.stop();
+  }
+  snippetEngine = new AudioEngine();
+
   if (snippetSpectrogram) {
     snippetSpectrogram.destroy();
     snippetSpectrogram = null;
@@ -556,7 +577,7 @@ function toggleSnippetPlay() {
 }
 
 function closeSnippetPlayer() {
-  snippetEngine.stop();
+  if (snippetEngine) snippetEngine.stop();
   cancelAnimationFrame(snippetAnimationFrame);
   document.getElementById('snippet-player-modal').classList.add('hidden');
 }
