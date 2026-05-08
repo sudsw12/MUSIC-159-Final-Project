@@ -64,9 +64,24 @@ function toggleEditMode(on) {
     
     // Ask if they want to publish
     setTimeout(() => {
-      const pwd = prompt("Changes saved to your browser! To publish them permanently to the live website (GitHub), enter your secret edit password. Or click Cancel to just keep them locally.");
-      if (pwd) {
-        publishToGitHub(pwd);
+      // Look for a cached token first
+      let token = localStorage.getItem('GH_PAT');
+      if (!token) {
+        token = prompt("Changes saved to your browser! To publish them permanently to GitHub Pages, enter your GitHub Personal Access Token. Or click Cancel to just keep them locally.");
+        if (token) {
+          // Ask if they want to save it for this session
+          if (confirm("Would you like to save this token in your browser so you don't have to enter it again on this computer?")) {
+            localStorage.setItem('GH_PAT', token);
+          }
+        }
+      } else {
+        if (!confirm("Publish changes to GitHub using your saved Personal Access Token?")) {
+          token = null; // abort if they say no
+        }
+      }
+      
+      if (token) {
+        publishToGitHub(token);
       } else {
         showToast('Edit mode OFF — changes saved locally only.');
       }
@@ -74,7 +89,7 @@ function toggleEditMode(on) {
   }
 }
 
-async function publishToGitHub(password) {
+async function publishToGitHub(token) {
   showToast('Publishing to GitHub... please wait.', 10000); // 10s toast
   
   try {
@@ -94,19 +109,44 @@ async function publishToGitHub(password) {
     // Get the full HTML
     const htmlContent = "<!DOCTYPE html>\n" + clone.outerHTML;
     
-    const res = await fetch('/.netlify/functions/save-report', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const REPO = 'sudsw12/music159finalproject';
+    const FILE_PATH = 'report.html';
+
+    // 1. Get current file SHA
+    const getRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`, {
+      headers: { 
+        'Authorization': `token ${token.trim()}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    
+    if (!getRes.ok) {
+      if (getRes.status === 401) localStorage.removeItem('GH_PAT'); // clear bad token
+      throw new Error(`GitHub API Error (${getRes.status}): ${await getRes.text()}`);
+    }
+    
+    const fileData = await getRes.json();
+    
+    // 2. Commit the new file
+    const putRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`, {
+      method: 'PUT',
+      headers: { 
+        'Authorization': `token ${token.trim()}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
+      },
       body: JSON.stringify({
-        password: password,
-        content: htmlContent
+        message: 'docs: update report content via live site editor',
+        content: btoa(unescape(encodeURIComponent(htmlContent))),
+        sha: fileData.sha
       })
     });
     
-    if (res.ok) {
+    if (putRes.ok) {
       showToast('🎉 Successfully published to GitHub! The live site will update in ~1 minute.');
     } else {
-      const err = await res.text();
+      if (putRes.status === 401) localStorage.removeItem('GH_PAT'); // clear bad token
+      const err = await putRes.text();
       showToast('Failed to publish: ' + err);
     }
   } catch(e) {
