@@ -249,7 +249,9 @@ function initSnippetEditor() {
     }
   });
 
-  document.getElementById('btn-open-creator').addEventListener('click', () => {
+  document.getElementById('btn-open-creator').addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (!currentSelectionRange) return;
     toolbar.classList.add('hidden');
     openSnippetCreator();
