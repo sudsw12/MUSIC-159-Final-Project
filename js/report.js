@@ -78,12 +78,21 @@ async function publishToGitHub(password) {
   showToast('Publishing to GitHub... please wait.', 10000); // 10s toast
   
   try {
-    // Clean up DOM before saving
-    const existingToast = document.getElementById('edit-toast');
-    if (existingToast) existingToast.remove();
+    // Clean up DOM before saving using a clone
+    const clone = document.documentElement.cloneNode(true);
+    const elementsToRemove = [
+      '#edit-toast', 
+      '#snippet-edit-toolbar', 
+      '#snippet-player-modal', 
+      '#snippet-creator-modal',
+      'grammarly-desktop-integration'
+    ];
+    elementsToRemove.forEach(selector => {
+      clone.querySelectorAll(selector).forEach(el => el.remove());
+    });
     
     // Get the full HTML
-    const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    const htmlContent = "<!DOCTYPE html>\n" + clone.outerHTML;
     
     const res = await fetch('/.netlify/functions/save-report', {
       method: 'POST',
@@ -249,7 +258,7 @@ function initSnippetEditor() {
     }
   });
 
-  document.getElementById('btn-open-creator').addEventListener('mousedown', (e) => {
+  toolbar.querySelector('#btn-open-creator').addEventListener('mousedown', (e) => {
     e.preventDefault();
     e.stopPropagation();
     if (!currentSelectionRange) return;
