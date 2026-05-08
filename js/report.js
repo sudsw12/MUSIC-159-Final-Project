@@ -413,8 +413,7 @@ function closeSnippetPlayer() {
 }
 
 /* ---------- Start ---------- */
-document.addEventListener('DOMContentLoaded', () => {
-  initEditMode();
-  initSnippetEditor();
-  initSnippetPlayer();
-});
+initEditMode();
+initSnippetEditor();
+initSnippetPlayer();
+
