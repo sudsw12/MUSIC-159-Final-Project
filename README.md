@@ -7,7 +7,6 @@ This is my final project for MUSIC 159 - Analyzing Popular Music after 2000. It 
 - **Interactive Stems Player:** A custom Web Audio API player that isolates the song into 5 separate stems (Vocals, Hi-Hat, Bass, Melody, Kick).
 - **Live Spectrograms:** Real-time frequency visualization mapping for all audio components.
 - **Embedded Audio Snippets:** The analytical report features inline audio snippets that let readers visualize and hear specific track moments in context.
-- **Live Editing:** A built-in editor allowing content updates directly from the frontend, pushed to GitHub Pages.
 
 ## Running Locally
 
