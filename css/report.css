@@ -65,6 +65,39 @@ body {
   border-bottom: 1px solid var(--border-subtle);
 }
 
+/* ---------- Navigation Tabs ---------- */
+.app-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 0;
+  flex: 1;
+}
+
+.app-tab {
+  padding: 6px 20px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.app-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.app-tab.active {
+  background: rgba(240, 118, 107, 0.15);
+  color: var(--accent-coral);
+  border-color: rgba(240, 118, 107, 0.3);
+}
+
 .report-topbar__back {
   display: flex;
   align-items: center;

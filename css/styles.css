@@ -167,6 +167,39 @@ body::before {
   opacity: 0.6;
 }
 
+/* ---------- Navigation Tabs ---------- */
+.app-tabs {
+  display: flex;
+  justify-content: center;
+  gap: var(--gap-md);
+  margin-top: var(--gap-md);
+  margin-bottom: 0;
+}
+
+.app-tab {
+  padding: 8px 24px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  border: 1px solid transparent;
+}
+
+.app-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.app-tab.active {
+  background: rgba(240, 118, 107, 0.15);
+  color: var(--accent-coral);
+  border-color: rgba(240, 118, 107, 0.3);
+}
+
 /* ---------- Loading Overlay ---------- */
 .loading-overlay {
   position: fixed;
