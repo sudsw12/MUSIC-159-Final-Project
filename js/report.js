@@ -327,8 +327,8 @@ async function openSnippetPlayer(stemsStr, start, end) {
   const modal = document.getElementById('snippet-player-modal');
   modal.classList.remove('hidden');
   document.getElementById('sp-loading').classList.remove('hidden');
-  document.getElementById('sp-title').textContent = \`\${stemsStr} (\${start}s - \${end}s)\`;
-  document.getElementById('sp-time-end').textContent = \`\${(end - start).toFixed(1)}s\`;
+  document.getElementById('sp-title').textContent = `${stemsStr} (${start}s - ${end}s)`;
+  document.getElementById('sp-time-end').textContent = `${(end - start).toFixed(1)}s`;
   document.getElementById('sp-time-current').textContent = '0.0s';
   document.getElementById('sp-bar-fill').style.width = '0%';
   document.getElementById('sp-btn-play').innerHTML = '<svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg>';
@@ -382,8 +382,8 @@ async function openSnippetPlayer(stemsStr, start, end) {
         document.getElementById('sp-btn-play').innerHTML = '<svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg>';
       }
       const pct = Math.max(0, Math.min(1, (t - start) / currentSnippet.duration));
-      document.getElementById('sp-bar-fill').style.width = \`\${pct * 100}%\`;
-      document.getElementById('sp-time-current').textContent = \`\${(t - start).toFixed(1)}s\`;
+      document.getElementById('sp-bar-fill').style.width = `${pct * 100}%`;
+      document.getElementById('sp-time-current').textContent = `${(t - start).toFixed(1)}s`;
       snippetSpectrogram._drawStatic(t / dur);
     }
     snippetAnimationFrame = requestAnimationFrame(loop);
