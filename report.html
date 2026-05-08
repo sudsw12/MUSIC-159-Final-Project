@@ -615,6 +615,311 @@
 .rdp-day_range_middle {
   border-radius: 0;
 }
+</style><style></style><style>.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: #0000ff;
+  --rdp-background-color: #e7edff;
+  --rdp-accent-color-dark: #3003e1;
+  --rdp-background-color-dark: #180270;
+  --rdp-outline: 2px solid var(--rdp-accent-color); /* Outline border for focused elements */
+  --rdp-outline-selected: 2px solid rgba(0, 0, 0, 0.75); /* Outline border for focused _and_ selected elements */
+
+  margin: 1em;
+}
+
+/* Hide elements for devices that are not screen readers */
+.rdp-vhidden {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute !important;
+  top: 0;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  border: 0 !important;
+}
+
+/* Buttons */
+.rdp-button_reset {
+  appearance: none;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  cursor: default;
+  color: inherit;
+  outline: none;
+  background: none;
+  font: inherit;
+
+  -moz-appearance: none;
+  -webkit-appearance: none;
+}
+
+.rdp-button {
+  border: 2px solid transparent;
+}
+
+.rdp-button[disabled] {
+  opacity: 0.25;
+}
+
+.rdp-button:not([disabled]) {
+  cursor: pointer;
+}
+
+.rdp-button:focus:not([disabled]),
+.rdp-button:active:not([disabled]) {
+  color: inherit;
+  border: var(--rdp-outline);
+  background-color: var(--rdp-background-color);
+}
+
+.rdp-button:hover:not([disabled]) {
+  background-color: var(--rdp-background-color);
+}
+
+.rdp-months {
+  display: flex;
+}
+
+.rdp-month {
+  margin: 0 1em;
+}
+
+.rdp-month:first-child {
+  margin-left: 0;
+}
+
+.rdp-month:last-child {
+  margin-right: 0;
+}
+
+.rdp-table {
+  margin: 0;
+  max-width: calc(var(--rdp-cell-size) * 7);
+  border-collapse: collapse;
+}
+
+.rdp-with_weeknumber .rdp-table {
+  max-width: calc(var(--rdp-cell-size) * 8);
+  border-collapse: collapse;
+}
+
+.rdp-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  text-align: left;
+}
+
+.rdp-multiple_months .rdp-caption {
+  position: relative;
+  display: block;
+  text-align: center;
+}
+
+.rdp-caption_dropdowns {
+  position: relative;
+  display: inline-flex;
+}
+
+.rdp-caption_label {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0 0.25em;
+  white-space: nowrap;
+  color: currentColor;
+  border: 0;
+  border: 2px solid transparent;
+  font-family: inherit;
+  font-size: 140%;
+  font-weight: bold;
+}
+
+.rdp-nav {
+  white-space: nowrap;
+}
+
+.rdp-multiple_months .rdp-caption_start .rdp-nav {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.rdp-multiple_months .rdp-caption_end .rdp-nav {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.rdp-nav_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--rdp-cell-size);
+  height: var(--rdp-cell-size);
+  padding: 0.25em;
+  border-radius: 100%;
+}
+
+/* ---------- */
+/* Dropdowns  */
+/* ---------- */
+
+.rdp-dropdown_year,
+.rdp-dropdown_month {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.rdp-dropdown {
+  appearance: none;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: inherit;
+  opacity: 0;
+  border: none;
+  background-color: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.rdp-dropdown[disabled] {
+  opacity: unset;
+  color: unset;
+}
+
+.rdp-dropdown:focus:not([disabled]) + .rdp-caption_label,
+.rdp-dropdown:active:not([disabled]) + .rdp-caption_label {
+  border: var(--rdp-outline);
+  border-radius: 6px;
+  background-color: var(--rdp-background-color);
+}
+
+.rdp-dropdown_icon {
+  margin: 0 0 0 5px;
+}
+
+.rdp-head {
+  border: 0;
+}
+
+.rdp-head_row,
+.rdp-row {
+  height: 100%;
+}
+
+.rdp-head_cell {
+  vertical-align: middle;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  font-weight: 700;
+  text-align: center;
+  height: 100%;
+  height: var(--rdp-cell-size);
+  padding: 0;
+}
+
+.rdp-tbody {
+  border: 0;
+}
+
+.rdp-tfoot {
+  margin: 0.5em;
+}
+
+.rdp-cell {
+  width: var(--rdp-cell-size);
+  height: 100%;
+  height: var(--rdp-cell-size);
+  padding: 0;
+  text-align: center;
+}
+
+.rdp-weeknumber {
+  font-size: 0.75em;
+}
+
+.rdp-weeknumber,
+.rdp-day {
+  display: flex;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--rdp-cell-size);
+  max-width: var(--rdp-cell-size);
+  height: var(--rdp-cell-size);
+  margin: 0;
+  border: 2px solid transparent;
+  border-radius: 100%;
+}
+
+.rdp-day_today:not(.rdp-day_outside) {
+  font-weight: bold;
+}
+
+.rdp-day_selected:not([disabled]),
+.rdp-day_selected:focus:not([disabled]),
+.rdp-day_selected:active:not([disabled]),
+.rdp-day_selected:hover:not([disabled]) {
+  color: white;
+  background-color: var(--rdp-accent-color);
+}
+
+.rdp-day_selected:focus:not([disabled]) {
+  border: var(--rdp-outline-selected);
+}
+
+.rdp:not([dir='rtl']) .rdp-day_range_start:not(.rdp-day_range_end) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.rdp:not([dir='rtl']) .rdp-day_range_end:not(.rdp-day_range_start) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.rdp[dir='rtl'] .rdp-day_range_start:not(.rdp-day_range_end) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.rdp[dir='rtl'] .rdp-day_range_end:not(.rdp-day_range_start) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.rdp-day_range_end.rdp-day_range_start {
+  border-radius: 100%;
+}
+
+.rdp-day_range_middle {
+  border-radius: 0;
+}
 </style><style></style></head>
 <body class="" data-new-gr-c-s-check-loaded="14.1289.0" data-gr-ext-installed="" data-new-gr-c-s-loaded="14.1289.0">
 
@@ -669,7 +974,7 @@
     <section class="report-section" id="section-context">
       <h2 class="report-section__heading" contenteditable="false">II. Context &amp; Background</h2>
       <div class="report-section__body" contenteditable="false" spellcheck="false">
-        <p>Devonté Hynes is a British-born, New York-based musician, songwriter, and producer whose work as the sole member of Blood Orange has been described as a fusion of "80s-pastiche and modern chillwave" (Geslani, 2013). Born in Ilford, Essex to a Sierra Leonean father and Guyanese mother, Hynes's music is influenced by themes of racial identity, queerness, and belonging. Hynes expresses these themes through more than just his lyrics though; he goes one step further by allowing them to shape the production of his songs.</p><p>Before releasing his debut studio album Coastal Grooves, Hynes performed in the punk/rock band Test Icicles and recorded twee pop as Lightspeed Champion. His pivot to the work done as Blood Orange marked a dramatic shift from guitar-driven rock to synthesizer-heavy, R&amp;B-inflected pop, inspired by figures like Prince, Morrissey, and the Cocteau Twins.</p><p><span style="font-size: 1rem;">In 2010, Hynes underwent throat surgery that permanently altered his singing voice (SongFacts, n.d.), shaping the unique vocal timbre heard on "Champagne Coast." The falsetto heard throughout the track is literally a physical necessity, a constraint that Hynes transforms into an expressive resource. As Heidemann (2016) argues, vocal timbre is shaped by the interaction of vocal fold vibration, vocal tract configuration, and breath support, and Hynes's post-surgical voice exhibits a breathiness that results from incomplete glottal closure, producing a sound that is perceptually "intimate" and "vulnerable."</span></p><p>"Champagne Coast" was released at the height of the chillwave movement (spanning from 2009–2012), a microgenre characterized by lo-fi production, nostalgic synthesizer textures, and hazy, reverb-drenched vocals (Battan, 2012). Artists like Washed Out, Toro y Moi, and Neon Indian defined the style's sonic palette: warm analog synths, tape-degraded drum machines, and vocals buried deep in the mix. However, Hynes's engagement with this aesthetic is more complex than simple genre participation. Where chillwave artists typically evoked a generalized "summery" nostalgia, Blood Orange's nostalgia is specific — it references the post-punk and new wave of the early 1980s, filtered through the experience of a Black British immigrant in New York City. As Harper (2014) notes, bedroom pop and its adjacent genres function as spaces where marginalized artists can construct sonic worlds that "refuse the polished surfaces of mainstream pop," using lo-fi production values not as limitations but as markers of authenticity and interiority.</p><p>Methodology</p><p>The song was downloaded from SoundCloud as a .m4a file and separated into five stems (Vocals, Instruments/Melody, Bass, Kick, Hi-Hat) using VirtualDJ's Stems 2.0 engine, which uses time-frequency masking for source separation. Each stem was then imported into Sonic Visualiser for spectral analysis. The interactive website was built to allow real-time spectrogram and waveform visualization of each stem independently and in combination.</p><p><br></p><p>Spectral centroid, harmonic-to-noise ratio (HNR), and formant structure were estimated from the spectrographic data.</p><p><br></p><p>Spatial analysis follows Moore, Schmidt, and Dockwray's (2009) Soundbox Model.</p>
+        <p>Devonté Hynes is a British-born, New York-based musician, songwriter, and producer whose work as the sole member of Blood Orange has been described as a fusion of "80s-pastiche and modern chillwave" (Geslani, 2013). Born in Ilford, Essex to a Sierra Leonean father and Guyanese mother, Hynes's music is influenced by themes of racial identity, queerness, and belonging. Hynes expresses these themes through more than just his lyrics though; he goes one step further by allowing them to shape the production of his songs.</p><p>Before releasing his debut studio album Coastal Grooves, Hynes performed in the punk/rock band Test Icicles and recorded twee pop as Lightspeed Champion. His pivot to the work done as Blood Orange marked a dramatic shift from guitar-driven rock to synthesizer-heavy, R&amp;B-inflected pop, inspired by figures like Prince, Morrissey, and the Cocteau Twins.</p><p><span style="font-size: 1rem;">In 2010, Hynes underwent throat surgery that permanently altered his singing voice (SongFacts, n.d.), shaping the unique vocal timbre heard on "Champagne Coast." The falsetto heard throughout the track is literally a physical necessity, but Hynes transforms it into a means of expression. As Heidemann (2016) states, vocal timbre is shaped by the interaction of vocal fold vibration, vocal tract configuration, and breath support, and Hynes's post-surgical voice exhibits a breathiness that results from incomplete glottal closure, producing a sound that is perceptually "intimate" and "vulnerable."</span></p><p>"Champagne Coast" was released at the height of the chillwave movement (spanning from 2009–2012), a microgenre characterized by lo-fi production, nostalgic synthesizer textures, and hazy, reverb-drenched vocals (Battan, 2012). Artists like Washed Out, Toro y Moi, and Neon Indian defined the style's sonic palette by using warm analog synths, tape-degraded drum machines, and vocals buried deep in the mix. However, Hynes engages with this aesthetic by doing more than just simply participating in the genre. While chillwave artists may strive to evoke a generalized "summery" nostalgia, Blood Orange's nostalgia is more specific, as it references the post-punk and new wave of the early 1980s. Furthermore, Hynes uses his experience as a Black British immigrant in New York City to further personalize his sound by incorporating musical motifs from his childhood into his music.</p><p><span style="font-size: 1rem;">Furthermore, as Harper (2014) notes, bedroom pop and its adjacent genres function as spaces where marginalized artists can construct sonic worlds that "refuse the polished surfaces of mainstream pop," using lo-fi production values not as limitations but as markers of authenticity and interiority.</span></p><p>Methodology</p><p>The song was downloaded from SoundCloud as a .m4a file and separated into five stems (<span class="audio-snippet-link" data-stems="vocals" data-start="0.0" data-end="292.4">Vocals</span>, <span class="audio-snippet-link" data-stems="melody" data-start="0.0" data-end="292.4">Instruments/Melody</span>, <span class="audio-snippet-link" data-stems="bass" data-start="0.0" data-end="292.4">Bass</span>, <span class="audio-snippet-link" data-stems="kick" data-start="0.0" data-end="292.4">Kick</span>, <span class="audio-snippet-link" data-stems="hihat" data-start="0.0" data-end="292.4">Hi-Hat</span>) using VirtualDJ's Stems 2.0 engine, which uses time-frequency masking for source separation. Each stem was then imported into Sonic Visualiser for spectral analysis. The interactive website was built to allow real-time spectrogram and waveform visualization of each stem independently and in combination.</p><p><br></p><p>Spectral centroid, harmonic-to-noise ratio (HNR), and formant structure were estimated from the spectrographic data.</p><p><br></p><p>Spatial analysis follows Moore, Schmidt, and Dockwray's (2009) Soundbox Model.</p>
       </div>
     </section>
 
@@ -834,6 +1139,73 @@
     <input type="number" name="start" placeholder="Start (s)" step="0.1">
     <input type="number" name="end" placeholder="End (s)" step="0.1">
     <button id="btn-add-snippet">Link Audio</button>
+  </div><div class="snippet-player-modal hidden" id="snippet-player-modal">
+    <div class="sp-header">
+      <span class="sp-title" id="sp-title">Audio Snippet</span>
+      <div class="sp-actions">
+        <button class="sp-btn" id="sp-btn-expand" title="Expand window">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+        </button>
+        <button class="sp-btn" id="sp-btn-close" title="Close player">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+    <div class="sp-canvas-wrap">
+      <canvas id="sp-canvas"></canvas>
+      <div class="sp-loading" id="sp-loading">Loading audio...</div>
+    </div>
+    <div class="sp-controls">
+      <button class="sp-play-btn" id="sp-btn-play">
+        <svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg>
+      </button>
+      <div class="sp-progress">
+        <span class="sp-time" id="sp-time-current">0.0s</span>
+        <div class="sp-bar-wrap" id="sp-bar-wrap">
+          <div class="sp-bar-fill" id="sp-bar-fill"></div>
+        </div>
+        <span class="sp-time" id="sp-time-end">5.0s</span>
+      </div>
+    </div>
+  </div><div class="snippet-edit-toolbar hidden" id="snippet-edit-toolbar" style="left: 858.375px; top: 2630.57px;"><button id="btn-open-creator">🔗 Add Audio Snippet</button></div><div class="snippet-player-modal expanded hidden" id="snippet-creator-modal" style="z-index: 1000;">
+    <div class="sp-header">
+      <span class="sp-title">Create Audio Snippet</span>
+      <div class="sp-actions">
+        <button class="sp-btn" id="sc-btn-close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+    <div style="padding: 16px;">
+      <div style="margin-bottom: 12px; display: flex; gap: 12px; font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--text-primary);">
+         <label><input type="checkbox" class="sc-stem-cb" value="vocals" checked=""> Vocals</label>
+         <label><input type="checkbox" class="sc-stem-cb" value="hihat"> Hi-Hat</label>
+         <label><input type="checkbox" class="sc-stem-cb" value="bass"> Bass</label>
+         <label><input type="checkbox" class="sc-stem-cb" value="melody"> Melody</label>
+         <label><input type="checkbox" class="sc-stem-cb" value="kick"> Kick</label>
+      </div>
+      <div class="sp-canvas-wrap">
+        <canvas id="sc-canvas" width="1532" height="480" style="cursor: grab;"></canvas>
+        <div id="sc-loading" class="sp-loading hidden">Loading audio...</div>
+      </div>
+      <div class="sp-controls" style="padding: 12px 0;">
+        <button class="sp-play-btn" id="sc-btn-play"><svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg></button>
+        <div class="sp-progress">
+          <span class="sp-time" id="sc-time-current">0.0s</span>
+          <div class="sp-bar-wrap" id="sc-bar-wrap">
+            <div class="sp-bar-fill" id="sc-bar-fill" style="width: 0%;"></div>
+          </div>
+          <span class="sp-time" id="sc-time-end">292.4s</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 16px; align-items: center; margin-top: 8px; font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--text-primary);">
+        <div>Start: <input type="number" id="sc-start" value="0.0" step="0.1" style="width: 60px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); color: #fff; border-radius: 4px; padding: 2px 4px;"> <button id="sc-set-start" style="background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border-subtle); border-radius:4px; padding: 2px 6px; cursor: pointer;">Set to Playhead</button></div>
+        <div>End: <input type="number" id="sc-end" value="5.0" step="0.1" style="width: 60px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); color: #fff; border-radius: 4px; padding: 2px 4px;"> <button id="sc-set-end" style="background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border-subtle); border-radius:4px; padding: 2px 6px; cursor: pointer;">Set to Playhead</button></div>
+      </div>
+      <div style="margin-top: 16px; text-align: right;">
+         <button id="sc-btn-save" style="background: var(--accent-coral); padding: 8px 16px; border: none; color: white; border-radius: 4px; cursor: pointer; font-weight: 600; font-family: 'Space Grotesk', sans-serif;">Insert Snippet</button>
+      </div>
+    </div>
   </div><div class="snippet-player-modal hidden" id="snippet-player-modal">
     <div class="sp-header">
       <span class="sp-title" id="sp-title">Audio Snippet</span>
