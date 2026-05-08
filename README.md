@@ -20,4 +20,4 @@ Then navigate to `http://localhost:8888` in your browser.
 
 ## Deployment
 
-This project is designed to be hosted via GitHub Pages.
+This project is designed to be hosted via GitHub Pages and can be accessed at https://sudsw12.github.io/MUSIC-159-Final-Project/
