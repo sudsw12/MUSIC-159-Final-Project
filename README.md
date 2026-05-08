@@ -1,6 +1,6 @@
 # Champagne Coast — Interactive Stem Analysis
 
-This is my final project for MUSIC 159 - Analyzing Popular Music after 2010. It is an interactive, web-based analytical tool and essay that explores the timbral and spatial construction of Blood Orange's "Champagne Coast".
+This is my final project for MUSIC 159 - Analyzing Popular Music after 2000. It is an interactive, web-based analytical tool and essay that explores the timbral and spatial construction of Blood Orange's "Champagne Coast" (2011).
 
 ## Features
 
