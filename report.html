@@ -5,8 +5,313 @@
   <title>Timbral Fog &amp; Spatial Intimacy | MUSIC 159</title>
   <meta name="description" content="An analysis of how Blood Orange constructs nostalgia and intimacy through vocal timbre and soundbox configuration in Champagne Coast.">
   <link rel="stylesheet" href="css/report.css">
-</head>
-<body class="">
+<style>.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: #0000ff;
+  --rdp-background-color: #e7edff;
+  --rdp-accent-color-dark: #3003e1;
+  --rdp-background-color-dark: #180270;
+  --rdp-outline: 2px solid var(--rdp-accent-color); /* Outline border for focused elements */
+  --rdp-outline-selected: 2px solid rgba(0, 0, 0, 0.75); /* Outline border for focused _and_ selected elements */
+
+  margin: 1em;
+}
+
+/* Hide elements for devices that are not screen readers */
+.rdp-vhidden {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute !important;
+  top: 0;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  border: 0 !important;
+}
+
+/* Buttons */
+.rdp-button_reset {
+  appearance: none;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  cursor: default;
+  color: inherit;
+  outline: none;
+  background: none;
+  font: inherit;
+
+  -moz-appearance: none;
+  -webkit-appearance: none;
+}
+
+.rdp-button {
+  border: 2px solid transparent;
+}
+
+.rdp-button[disabled] {
+  opacity: 0.25;
+}
+
+.rdp-button:not([disabled]) {
+  cursor: pointer;
+}
+
+.rdp-button:focus:not([disabled]),
+.rdp-button:active:not([disabled]) {
+  color: inherit;
+  border: var(--rdp-outline);
+  background-color: var(--rdp-background-color);
+}
+
+.rdp-button:hover:not([disabled]) {
+  background-color: var(--rdp-background-color);
+}
+
+.rdp-months {
+  display: flex;
+}
+
+.rdp-month {
+  margin: 0 1em;
+}
+
+.rdp-month:first-child {
+  margin-left: 0;
+}
+
+.rdp-month:last-child {
+  margin-right: 0;
+}
+
+.rdp-table {
+  margin: 0;
+  max-width: calc(var(--rdp-cell-size) * 7);
+  border-collapse: collapse;
+}
+
+.rdp-with_weeknumber .rdp-table {
+  max-width: calc(var(--rdp-cell-size) * 8);
+  border-collapse: collapse;
+}
+
+.rdp-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  text-align: left;
+}
+
+.rdp-multiple_months .rdp-caption {
+  position: relative;
+  display: block;
+  text-align: center;
+}
+
+.rdp-caption_dropdowns {
+  position: relative;
+  display: inline-flex;
+}
+
+.rdp-caption_label {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0 0.25em;
+  white-space: nowrap;
+  color: currentColor;
+  border: 0;
+  border: 2px solid transparent;
+  font-family: inherit;
+  font-size: 140%;
+  font-weight: bold;
+}
+
+.rdp-nav {
+  white-space: nowrap;
+}
+
+.rdp-multiple_months .rdp-caption_start .rdp-nav {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.rdp-multiple_months .rdp-caption_end .rdp-nav {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.rdp-nav_button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--rdp-cell-size);
+  height: var(--rdp-cell-size);
+  padding: 0.25em;
+  border-radius: 100%;
+}
+
+/* ---------- */
+/* Dropdowns  */
+/* ---------- */
+
+.rdp-dropdown_year,
+.rdp-dropdown_month {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.rdp-dropdown {
+  appearance: none;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: inherit;
+  opacity: 0;
+  border: none;
+  background-color: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.rdp-dropdown[disabled] {
+  opacity: unset;
+  color: unset;
+}
+
+.rdp-dropdown:focus:not([disabled]) + .rdp-caption_label,
+.rdp-dropdown:active:not([disabled]) + .rdp-caption_label {
+  border: var(--rdp-outline);
+  border-radius: 6px;
+  background-color: var(--rdp-background-color);
+}
+
+.rdp-dropdown_icon {
+  margin: 0 0 0 5px;
+}
+
+.rdp-head {
+  border: 0;
+}
+
+.rdp-head_row,
+.rdp-row {
+  height: 100%;
+}
+
+.rdp-head_cell {
+  vertical-align: middle;
+  text-transform: uppercase;
+  font-size: 0.75em;
+  font-weight: 700;
+  text-align: center;
+  height: 100%;
+  height: var(--rdp-cell-size);
+  padding: 0;
+}
+
+.rdp-tbody {
+  border: 0;
+}
+
+.rdp-tfoot {
+  margin: 0.5em;
+}
+
+.rdp-cell {
+  width: var(--rdp-cell-size);
+  height: 100%;
+  height: var(--rdp-cell-size);
+  padding: 0;
+  text-align: center;
+}
+
+.rdp-weeknumber {
+  font-size: 0.75em;
+}
+
+.rdp-weeknumber,
+.rdp-day {
+  display: flex;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--rdp-cell-size);
+  max-width: var(--rdp-cell-size);
+  height: var(--rdp-cell-size);
+  margin: 0;
+  border: 2px solid transparent;
+  border-radius: 100%;
+}
+
+.rdp-day_today:not(.rdp-day_outside) {
+  font-weight: bold;
+}
+
+.rdp-day_selected:not([disabled]),
+.rdp-day_selected:focus:not([disabled]),
+.rdp-day_selected:active:not([disabled]),
+.rdp-day_selected:hover:not([disabled]) {
+  color: white;
+  background-color: var(--rdp-accent-color);
+}
+
+.rdp-day_selected:focus:not([disabled]) {
+  border: var(--rdp-outline-selected);
+}
+
+.rdp:not([dir='rtl']) .rdp-day_range_start:not(.rdp-day_range_end) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.rdp:not([dir='rtl']) .rdp-day_range_end:not(.rdp-day_range_start) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.rdp[dir='rtl'] .rdp-day_range_start:not(.rdp-day_range_end) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.rdp[dir='rtl'] .rdp-day_range_end:not(.rdp-day_range_start) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.rdp-day_range_end.rdp-day_range_start {
+  border-radius: 100%;
+}
+
+.rdp-day_range_middle {
+  border-radius: 0;
+}
+</style><style></style></head>
+<body class="" data-new-gr-c-s-check-loaded="14.1289.0" data-gr-ext-installed="" data-new-gr-c-s-loaded="14.1289.0">
 
   <!-- Topbar -->
   <header class="report-topbar">
@@ -52,7 +357,7 @@
     <!-- Section 1: Introduction -->
     <section class="report-section" id="section-intro">
       <h2 class="report-section__heading" contenteditable="false">I. Introduction</h2>
-      <div class="report-section__body" contenteditable="false"><div><div>"Champagne Coast" (2011), the closing track of Blood Orange's debut album Coastal Grooves, is a song that sounds like it was recorded in a half-remembered dream, with fog on the horizon and petrichor in the air. Produced and performed by Devonté Hynes, the track layers a breathy, fragile falsetto over sparse synth pads, skeletal drum-machine patterns, and a wandering bass line to produce something that feels nostalgic of both the 1980s and the 2010s. This nostalgia isn't just in the background, referenced through various acoustic elements, but rather constructed through specific timbral and spatial choices. This paper argues that the intimacy and nostalgia listeners perceive in "Champagne Coast" are not accidental byproducts of a lo-fi production but are rather engineered through (1) a vocal timbre characterized by high breathiness, low spectral centroid, and sparse upper harmonics, and (2) a soundbox configuration that places the listener in an intimate proxemic zone while surrounding them with textural layers that recede into a distant, reverb-soaked public zone.</div><div><br></div><div>By isolating the song into its five constituent stems, vocals, hi-hat, bass, melody, and kick,&nbsp; through VirtualDJ's Stems 2.0 technology vocals, I investigate each individual component through spectrographic analysis. This report will demonstrate how Hynes uses timbral "fog" and spatial looseness as tools to invoke feelings of identity, isolation, and longing.</div><div><br></div><div>The interactive stem player allows the reader to hear and see these analytical claims in real time.</div></div></div>
+      <div class="report-section__body" contenteditable="false" spellcheck="false"><div>"Champagne Coast" (2011), the closing track of Blood Orange's debut album Coastal Grooves, is a song that sounds like it was recorded in a half-remembered dream, with fog on the horizon and petrichor in the air. Produced and performed by Devonté Hynes, the track layers a breathy, fragile falsetto over sparse synth pads, skeletal drum-machine patterns, and a wandering bass line to produce something that feels nostalgic of both the 1980s and the 2010s. This nostalgia isn't just in the background, referenced through various acoustic elements, but rather constructed through specific timbral and spatial choices. This paper argues that the intimacy and nostalgia listeners perceive in "Champagne Coast" are not accidental byproducts of a lo-fi production but are rather the intentional results of a breathy vocal timbre with a low spectral centroid, and sparse upper harmonics, and a soundbox configuration that places the listener in an intimate proxemic zone while surrounding them with textural layers that diminish into a distant public zone.</div><div><br></div><div>By isolating the song into its five constituent stems, vocals, hi-hat, bass, melody, and kick,&nbsp; through VirtualDJ's Stems 2.0 technology, I investigate each component through spectrographic analysis. This report will use spectrographic analysis of Champagne Coast's stems to demonstrate how Hynes uses timbral "fog" and spatial looseness as tools to evoke feelings of identity, isolation, and longing.</div></div>
     </section>
 
     <!-- Section 2: Context -->
@@ -233,4 +538,4 @@
   <script src="js/report.js"></script>
 
 
-</body></html>
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>
