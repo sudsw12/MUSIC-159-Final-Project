@@ -1,5 +1,6 @@
 import { AudioEngine } from './audio-engine.js';
 import { SpectrogramRenderer } from './spectrogram.js';
+import { WaveformRenderer } from './waveform.js';
 
 const ALL_STEMS = {
   vocals: { id: 'vocals', name: 'Vocals',  url: 'audio/vocals.mp3', color: '#f0766b' },
@@ -210,30 +211,32 @@ document.addEventListener('click', (e) => {
   }
 });
 
-/* ---------- Snippet Editor Toolbar ---------- */
+/* ---------- Snippet Editor Toolbar & Modal ---------- */
 let currentSelectionRange = null;
+const creatorEngine = new AudioEngine();
+let creatorWaveform = null;
+let creatorLoopFrame = null;
 
 function initSnippetEditor() {
   const toolbar = document.createElement('div');
   toolbar.className = 'snippet-edit-toolbar hidden';
   toolbar.id = 'snippet-edit-toolbar';
-  toolbar.innerHTML = `
-    <input type="text" name="stems" placeholder="vocals, bass" title="Comma-separated stems" />
-    <input type="number" name="start" placeholder="Start (s)" step="0.1" />
-    <input type="number" name="end" placeholder="End (s)" step="0.1" />
-    <button id="btn-add-snippet">Link Audio</button>
-  `;
+  toolbar.innerHTML = `<button id="btn-open-creator">🔗 Add Audio Snippet</button>`;
+  
+  // Prevent mousedown from clearing the selection
+  toolbar.addEventListener('mousedown', (e) => e.preventDefault());
   document.body.appendChild(toolbar);
 
-  document.addEventListener('mouseup', () => {
+  document.addEventListener('mouseup', (e) => {
     if (!editMode) return;
+    if (e.target.closest('#snippet-edit-toolbar') || e.target.closest('#snippet-creator-modal')) return;
+    
     const sel = window.getSelection();
     if (sel.isCollapsed) {
       toolbar.classList.add('hidden');
       return;
     }
     
-    // Check if selection is within report section body
     const node = sel.anchorNode;
     if (node && node.parentElement && node.parentElement.closest('.report-section__body')) {
       currentSelectionRange = sel.getRangeAt(0);
@@ -246,11 +249,101 @@ function initSnippetEditor() {
     }
   });
 
-  document.getElementById('btn-add-snippet').addEventListener('click', () => {
+  document.getElementById('btn-open-creator').addEventListener('click', () => {
     if (!currentSelectionRange) return;
-    const stems = toolbar.querySelector('[name="stems"]').value.trim() || 'vocals';
-    const start = toolbar.querySelector('[name="start"]').value || '0';
-    const end = toolbar.querySelector('[name="end"]').value || '5';
+    toolbar.classList.add('hidden');
+    openSnippetCreator();
+  });
+
+  buildSnippetCreatorModal();
+}
+
+function buildSnippetCreatorModal() {
+  const modal = document.createElement('div');
+  modal.className = 'snippet-player-modal expanded hidden';
+  modal.id = 'snippet-creator-modal';
+  modal.style.zIndex = '1000';
+  modal.innerHTML = `
+    <div class="sp-header">
+      <span class="sp-title">Create Audio Snippet</span>
+      <div class="sp-actions">
+        <button class="sp-btn" id="sc-btn-close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+    <div style="padding: 16px;">
+      <div style="margin-bottom: 12px; display: flex; gap: 12px; font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--text-primary);">
+         <label><input type="checkbox" class="sc-stem-cb" value="vocals" checked> Vocals</label>
+         <label><input type="checkbox" class="sc-stem-cb" value="hihat"> Hi-Hat</label>
+         <label><input type="checkbox" class="sc-stem-cb" value="bass"> Bass</label>
+         <label><input type="checkbox" class="sc-stem-cb" value="melody"> Melody</label>
+         <label><input type="checkbox" class="sc-stem-cb" value="kick"> Kick</label>
+      </div>
+      <div class="sp-canvas-wrap">
+        <canvas id="sc-canvas"></canvas>
+        <div id="sc-loading" class="sp-loading hidden">Loading audio...</div>
+      </div>
+      <div class="sp-controls" style="padding: 12px 0;">
+        <button class="sp-play-btn" id="sc-btn-play">
+          <svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg>
+        </button>
+        <div class="sp-progress">
+          <span class="sp-time" id="sc-time-current">0.0s</span>
+          <div class="sp-bar-wrap" id="sc-bar-wrap">
+            <div class="sp-bar-fill" id="sc-bar-fill"></div>
+          </div>
+          <span class="sp-time" id="sc-time-end">0.0s</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 16px; align-items: center; margin-top: 8px; font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--text-primary);">
+        <div>Start: <input type="number" id="sc-start" value="0.0" step="0.1" style="width: 60px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); color: #fff; border-radius: 4px; padding: 2px 4px;" /> <button id="sc-set-start" style="background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border-subtle); border-radius:4px; padding: 2px 6px; cursor: pointer;">Set to Playhead</button></div>
+        <div>End: <input type="number" id="sc-end" value="5.0" step="0.1" style="width: 60px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); color: #fff; border-radius: 4px; padding: 2px 4px;" /> <button id="sc-set-end" style="background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border-subtle); border-radius:4px; padding: 2px 6px; cursor: pointer;">Set to Playhead</button></div>
+      </div>
+      <div style="margin-top: 16px; text-align: right;">
+         <button id="sc-btn-save" style="background: var(--accent-coral); padding: 8px 16px; border: none; color: white; border-radius: 4px; cursor: pointer; font-weight: 600; font-family: 'Space Grotesk', sans-serif;">Insert Snippet</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  // Close Creator
+  document.getElementById('sc-btn-close').addEventListener('click', closeSnippetCreator);
+  
+  // Stem checkboxes
+  document.querySelectorAll('.sc-stem-cb').forEach(cb => {
+    cb.addEventListener('change', () => {
+      creatorEngine.setVolume(cb.value, cb.checked ? 1 : 0);
+    });
+  });
+
+  // Play button
+  document.getElementById('sc-btn-play').addEventListener('click', () => {
+    const btn = document.getElementById('sc-btn-play');
+    if (creatorEngine.isPlaying) {
+      creatorEngine.pause();
+      btn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg>';
+    } else {
+      creatorEngine.play();
+      btn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>';
+    }
+  });
+
+  // Set to Playhead
+  document.getElementById('sc-set-start').addEventListener('click', () => {
+    document.getElementById('sc-start').value = creatorEngine.getCurrentTime().toFixed(1);
+  });
+  document.getElementById('sc-set-end').addEventListener('click', () => {
+    document.getElementById('sc-end').value = creatorEngine.getCurrentTime().toFixed(1);
+  });
+
+  // Save Snippet
+  document.getElementById('sc-btn-save').addEventListener('click', () => {
+    if (!currentSelectionRange) return;
+    const checked = Array.from(document.querySelectorAll('.sc-stem-cb')).filter(c => c.checked).map(c => c.value);
+    const stems = checked.length ? checked.join(',') : 'vocals';
+    const start = document.getElementById('sc-start').value || '0';
+    const end = document.getElementById('sc-end').value || '5';
     
     const span = document.createElement('span');
     span.className = 'audio-snippet-link';
@@ -259,10 +352,66 @@ function initSnippetEditor() {
     span.dataset.end = end;
     
     currentSelectionRange.surroundContents(span);
-    toolbar.classList.add('hidden');
+    closeSnippetCreator();
     saveEssayEdits();
     showToast('Snippet link added!');
   });
+  
+  // Custom scrub bar
+  document.getElementById('sc-bar-wrap').addEventListener('mousedown', (e) => {
+    const rect = e.target.closest('#sc-bar-wrap').getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    creatorEngine.seek(pct * creatorEngine.duration);
+  });
+}
+
+async function openSnippetCreator() {
+  document.getElementById('snippet-creator-modal').classList.remove('hidden');
+  
+  // If not loaded yet
+  if (!creatorEngine.duration) {
+    document.getElementById('sc-loading').classList.remove('hidden');
+    const stemConfigsToLoad = Object.values(ALL_STEMS);
+    await creatorEngine.init(stemConfigsToLoad);
+    document.getElementById('sc-loading').classList.add('hidden');
+    
+    const canvas = document.getElementById('sc-canvas');
+    const buffer = creatorEngine.getMixedBuffer();
+    creatorWaveform = new WaveformRenderer(canvas, buffer, {
+      color: '#9b6dff',
+      getPlaybackTime: () => creatorEngine.getCurrentTime(),
+      getDuration: () => creatorEngine.duration,
+      onSeek: (t) => creatorEngine.seek(t)
+    });
+    
+    document.getElementById('sc-time-end').textContent = `${creatorEngine.duration.toFixed(1)}s`;
+  }
+  
+  // Sync checkboxes
+  document.querySelectorAll('.sc-stem-cb').forEach(cb => {
+    creatorEngine.setVolume(cb.value, cb.checked ? 1 : 0);
+  });
+  
+  // Start render loop
+  const loop = () => {
+    if (creatorEngine.duration) {
+      const t = creatorEngine.getCurrentTime();
+      document.getElementById('sc-time-current').textContent = `${t.toFixed(1)}s`;
+      document.getElementById('sc-bar-fill').style.width = `${(t / creatorEngine.duration) * 100}%`;
+    }
+    creatorLoopFrame = requestAnimationFrame(loop);
+  };
+  loop();
+  
+  if (creatorWaveform) creatorWaveform.start();
+}
+
+function closeSnippetCreator() {
+  creatorEngine.stop();
+  document.getElementById('sc-btn-play').innerHTML = '<svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"></polygon></svg>';
+  if (creatorWaveform) creatorWaveform.stop();
+  cancelAnimationFrame(creatorLoopFrame);
+  document.getElementById('snippet-creator-modal').classList.add('hidden');
 }
 
 /* ---------- Mini Player Modal ---------- */
