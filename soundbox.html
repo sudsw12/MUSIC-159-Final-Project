@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D Soundbox — Champagne Coast | MUSIC 159</title>
+  <meta name="description" content="A navigable 3D soundbox for tracking the stereo position, register, proxemic depth, and energy of Champagne Coast stems over time." />
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/soundbox.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.184.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.184.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body class="soundbox-page">
+  <div class="loading-overlay" id="soundbox-loading">
+    <div class="loading-spinner"></div>
+    <p class="loading-text" id="soundbox-loading-text">Preparing 3D soundbox...</p>
+    <p class="soundbox-loading__hint" id="soundbox-loading-hint">Decoding stems and mapping position data in-browser.</p>
+    <div class="loading-progress">
+      <div class="loading-progress__bar" id="soundbox-loading-bar"></div>
+    </div>
+  </div>
+
+  <div class="soundbox-shell">
+    <header class="soundbox-header">
+      <div>
+        <h1 class="soundbox-header__title">Champagne Coast</h1>
+        <p class="soundbox-header__subtitle">Interactive 3D Soundbox</p>
+      </div>
+
+      <nav class="app-tabs" aria-label="Primary">
+        <a href="index.html" class="app-tab">Interactive Player</a>
+        <a href="soundbox.html" class="app-tab active">3D Soundbox</a>
+        <a href="report.html" class="app-tab">Analytical Report</a>
+      </nav>
+    </header>
+
+    <main class="soundbox-workbench">
+      <aside class="soundbox-panel soundbox-panel--left" aria-label="Soundbox controls">
+        <div class="soundbox-panel__section">
+          <p class="soundbox-kicker">Visible stems</p>
+          <div class="soundbox-stems" id="soundbox-stems"></div>
+        </div>
+
+        <div class="soundbox-panel__section">
+          <p class="soundbox-kicker">Camera</p>
+          <div class="soundbox-button-grid">
+            <button class="soundbox-button" type="button" id="soundbox-reset-camera">Reset View</button>
+            <button class="soundbox-button" type="button" id="soundbox-focus-selected">Focus Stem</button>
+          </div>
+          <div class="soundbox-help">
+            <span>Drag to orbit</span>
+            <span>Scroll to zoom</span>
+            <span>Right-drag to pan</span>
+          </div>
+        </div>
+
+        <div class="soundbox-panel__section">
+          <p class="soundbox-kicker">Display</p>
+          <label class="soundbox-toggle">
+            <input type="checkbox" id="soundbox-trails" checked>
+            <span>Show faint motion trails</span>
+          </label>
+        </div>
+      </aside>
+
+      <section class="soundbox-stage" aria-label="3D soundbox viewport">
+        <div class="soundbox-axis-note">
+          <span>x = stereo pan</span>
+          <span>y = register</span>
+          <span>z = proxemic depth</span>
+        </div>
+        <div class="soundbox-canvas-wrap" id="soundbox-canvas-wrap"></div>
+      </section>
+
+      <aside class="soundbox-panel soundbox-panel--right" aria-label="Paused stem inspection">
+        <div class="soundbox-panel__section">
+          <p class="soundbox-kicker">Paused inspection</p>
+          <h2 class="soundbox-inspector__title" id="inspector-title">Vocals</h2>
+          <p class="soundbox-inspector__zone" id="inspector-zone">Intimate zone</p>
+          <p class="soundbox-inspector__note" id="inspector-note"></p>
+        </div>
+
+        <dl class="soundbox-metrics">
+          <div>
+            <dt>Pan</dt>
+            <dd data-inspector-value="pan">0.00</dd>
+          </div>
+          <div>
+            <dt>Register</dt>
+            <dd data-inspector-value="register">0 Hz</dd>
+          </div>
+          <div>
+            <dt>Depth</dt>
+            <dd data-inspector-value="depth">0.00</dd>
+          </div>
+          <div>
+            <dt>Energy</dt>
+            <dd data-inspector-value="energy">0%</dd>
+          </div>
+        </dl>
+      </aside>
+    </main>
+
+    <footer class="soundbox-transport" aria-label="Soundbox transport">
+      <button class="soundbox-play" type="button" id="soundbox-play" disabled>
+        <span class="soundbox-play__icon">▶</span>
+        <span>Play</span>
+      </button>
+
+      <div class="soundbox-timeline-wrap">
+        <div class="soundbox-time-row">
+          <span id="soundbox-time-current">0:00</span>
+          <span id="soundbox-time-total">0:00</span>
+        </div>
+        <div class="soundbox-timeline-shell">
+          <div class="soundbox-timeline-fill" id="soundbox-timeline-fill"></div>
+          <input type="range" id="soundbox-timeline" min="0" max="10000" value="0" aria-label="Song timeline" />
+          <div class="soundbox-markers" id="soundbox-markers"></div>
+        </div>
+      </div>
+
+      <label class="soundbox-volume">
+        <span>Volume</span>
+        <input type="range" id="soundbox-volume" min="0" max="1" step="0.01" value="0.82" />
+      </label>
+    </footer>
+  </div>
+
+  <script type="module">
+    import('./js/soundbox.js').catch((error) => {
+      console.error(error);
+      const overlay = document.getElementById('soundbox-loading');
+      const text = document.getElementById('soundbox-loading-text');
+      const hint = document.getElementById('soundbox-loading-hint');
+      if (overlay) overlay.classList.remove('hidden');
+      if (text) text.textContent = 'Could not load the 3D soundbox module.';
+      if (hint) hint.textContent = 'Check your connection to the pinned Three.js CDN, then refresh this page from a local server.';
+    });
+  </script>
+</body>
+</html>

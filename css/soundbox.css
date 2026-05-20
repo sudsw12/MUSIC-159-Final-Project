@@ -1,0 +1,496 @@
+body.soundbox-page {
+  min-height: 100vh;
+  overflow: hidden;
+  background: #05060c;
+}
+
+.soundbox-page::before {
+  background:
+    radial-gradient(ellipse 58% 44% at 48% 8%, rgba(91, 135, 245, 0.12) 0%, transparent 62%),
+    radial-gradient(ellipse 34% 30% at 15% 76%, rgba(240, 118, 107, 0.08) 0%, transparent 66%),
+    radial-gradient(ellipse 36% 34% at 86% 82%, rgba(79, 209, 217, 0.08) 0%, transparent 68%),
+    #05060c;
+}
+
+.soundbox-loading__hint {
+  margin-top: 0.35rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.soundbox-shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 100vh;
+  padding: 18px 18px 20px;
+  gap: 14px;
+}
+
+.soundbox-header {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto minmax(180px, 1fr);
+  align-items: center;
+  min-height: 58px;
+  padding: 0 10px;
+}
+
+.soundbox-header .app-tabs {
+  margin: 0;
+}
+
+.soundbox-header__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.1;
+  letter-spacing: 0;
+  color: var(--text-primary);
+}
+
+.soundbox-header__subtitle {
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.soundbox-workbench {
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr) 280px;
+  min-height: 0;
+  gap: 14px;
+}
+
+.soundbox-panel,
+.soundbox-stage,
+.soundbox-transport {
+  border: 1px solid var(--border-glass);
+  background: rgba(12, 12, 24, 0.72);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+.soundbox-panel {
+  min-height: 0;
+  overflow: auto;
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.soundbox-panel__section + .soundbox-panel__section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.soundbox-kicker {
+  margin-bottom: 12px;
+  color: var(--accent-purple);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.soundbox-stems {
+  display: grid;
+  gap: 10px;
+}
+
+.soundbox-stems__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.soundbox-stem {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.035);
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+
+.soundbox-stem.active {
+  border-color: color-mix(in srgb, var(--stem-color) 68%, transparent);
+  background: color-mix(in srgb, var(--stem-color) 12%, rgba(255, 255, 255, 0.035));
+}
+
+.soundbox-stem__visibility {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  color: var(--text-primary);
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+.soundbox-stem__visibility input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.soundbox-stem__dot {
+  width: 11px;
+  height: 11px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--stem-color);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--stem-color) 52%, transparent);
+}
+
+.soundbox-stem__visibility input:not(:checked) + .soundbox-stem__dot {
+  opacity: 0.22;
+  box-shadow: none;
+}
+
+.soundbox-stem__actions {
+  display: flex;
+  gap: 6px;
+}
+
+.soundbox-stem__focus,
+.soundbox-mini-button,
+.soundbox-button {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  border-radius: 8px;
+  font: 600 0.74rem 'Space Grotesk', sans-serif;
+  cursor: pointer;
+  transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+}
+
+.soundbox-stem__focus {
+  padding: 5px 7px;
+}
+
+.soundbox-mini-button {
+  min-height: 28px;
+  padding: 5px 9px;
+}
+
+.soundbox-button {
+  min-height: 36px;
+  padding: 8px 10px;
+}
+
+.soundbox-stem__focus:hover,
+.soundbox-mini-button:hover,
+.soundbox-button:hover {
+  color: var(--text-primary);
+  border-color: rgba(240, 118, 107, 0.28);
+  background: rgba(240, 118, 107, 0.1);
+}
+
+.soundbox-button-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.soundbox-help {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.soundbox-toggle {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.soundbox-stage {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: #05060c;
+}
+
+.soundbox-canvas-wrap {
+  position: absolute;
+  inset: 0;
+}
+
+.soundbox-canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+
+.soundbox-canvas-wrap canvas:active {
+  cursor: grabbing;
+}
+
+.soundbox-axis-note {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: min(620px, calc(100% - 32px));
+}
+
+.soundbox-axis-note span {
+  padding: 6px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.38);
+  color: rgba(232, 230, 240, 0.74);
+  font: 600 0.7rem 'Space Grotesk', sans-serif;
+}
+
+.soundbox-inspector__title {
+  margin: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.45rem;
+  line-height: 1.1;
+}
+
+.soundbox-inspector__zone {
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+}
+
+.soundbox-inspector__note {
+  margin-top: 14px;
+  color: var(--text-secondary);
+  font-size: 0.84rem;
+  line-height: 1.65;
+}
+
+.soundbox-metrics {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.soundbox-metrics div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.soundbox-metrics dt {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.soundbox-metrics dd {
+  color: var(--text-primary);
+  font: 600 0.92rem 'Space Grotesk', sans-serif;
+}
+
+.soundbox-transport {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 190px;
+  align-items: center;
+  gap: 18px;
+  border-radius: var(--radius-md);
+  padding: 13px 16px;
+}
+
+.soundbox-play {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 100px;
+  min-height: 42px;
+  border: 1px solid rgba(240, 118, 107, 0.42);
+  border-radius: 999px;
+  background: rgba(240, 118, 107, 0.14);
+  color: var(--accent-coral);
+  font: 700 0.9rem 'Space Grotesk', sans-serif;
+  cursor: pointer;
+}
+
+.soundbox-play:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.soundbox-play__icon {
+  font-size: 0.82rem;
+}
+
+.soundbox-timeline-wrap {
+  min-width: 0;
+}
+
+.soundbox-time-row {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font: 600 0.75rem 'Space Grotesk', sans-serif;
+  margin-bottom: 6px;
+}
+
+.soundbox-timeline-shell {
+  position: relative;
+  height: 28px;
+}
+
+.soundbox-timeline-shell::before,
+.soundbox-timeline-fill {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 10px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.soundbox-timeline-shell::before {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.soundbox-timeline-fill {
+  right: auto;
+  width: 0;
+  background: linear-gradient(90deg, var(--accent-coral), var(--accent-purple));
+  pointer-events: none;
+}
+
+#soundbox-timeline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.soundbox-markers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.soundbox-marker {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: rgba(255, 255, 255, 0.34);
+  color: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.soundbox-marker:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.soundbox-marker::after {
+  content: attr(data-label);
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  opacity: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  color: var(--text-primary);
+  background: rgba(0, 0, 0, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 4px 7px;
+  font: 600 0.68rem 'Space Grotesk', sans-serif;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.soundbox-volume {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  color: var(--text-secondary);
+  font: 600 0.76rem 'Space Grotesk', sans-serif;
+}
+
+.soundbox-volume input {
+  min-width: 0;
+  accent-color: var(--accent-coral);
+}
+
+@media (max-width: 1020px) {
+  body.soundbox-page {
+    overflow: auto;
+  }
+
+  .soundbox-shell {
+    min-height: auto;
+  }
+
+  .soundbox-header {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .soundbox-workbench {
+    grid-template-columns: 1fr;
+  }
+
+  .soundbox-panel {
+    overflow: visible;
+  }
+
+  .soundbox-stage {
+    min-height: 62vh;
+  }
+
+  .soundbox-transport {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .soundbox-shell {
+    padding: 12px;
+  }
+
+  .soundbox-header .app-tabs {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .soundbox-header .app-tab {
+    padding-inline: 14px;
+  }
+
+  .soundbox-stage {
+    min-height: 58vh;
+  }
+
+  .soundbox-axis-note {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
